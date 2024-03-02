@@ -1,9 +1,6 @@
 #define LED 5
 #define LED2 6
 #define LED3 7
-#define LED 13
-#define LED2 12
-#define LED3 11
 #define PULSADOR 7
 #define ARDUINO 9600
 #define TIEMPO 200
@@ -20,18 +17,6 @@ Serial.begin(ARDUINO);
 }
 
 void loop() {
-  digitalWrite(LED, HIGH);
-  digitalWrite(LED2,LOW);
-  digitalWrite(LED3,LOW);
-  delay(TIEMPO);
-  digitalWrite(LED, LOW);
-  digitalWrite(LED2,HIGH);
-  digitalWrite(LED3,LOW);
-  delay(TIEMPO);
-  digitalWrite(LED, LOW);
-  digitalWrite(LED2,LOW);
-  digitalWrite(LED3,HIGH);
-  delay(TIEMPO);
   val=digitalRead(PULSADOR);
   Serial.println(val);
   if(val && apagar == 0)
@@ -69,4 +54,3 @@ void loop() {
     delay(TIEMPO);
   }
 }
-
