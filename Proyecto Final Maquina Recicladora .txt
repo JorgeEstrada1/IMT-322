@@ -1,0 +1,15 @@
+Proyecto Final: Maquina Recicladora de botellas para Filamento
+Integrantes:
+Reynaldo Avila
+Jorge Luis Estrada
+Dagiro Fernandez
+Descripcion:
+El proyecto consiste en el desarrollo y construcción de una máquina que recicla botellas de plástico para producir filamento 3D. El objetivo principal es aprovechar el plástico de las botellas, que de otro modo sería desperdiciado, y convertirlo en un material útil y sostenible para su uso en impresoras 3D.
+
+La máquina se compone de diferentes componentes y etapas de procesamiento. En primer lugar, las botellas de plástico.
+
+A medida que el plástico pasa a través de una boquilla la cual tiene un diámetro específico, le permite obtener un filamento de plástico continuo y de diámetro uniforme. El filamento caliente se enfría rápidamente para solidificarlo y se recoge en carretes o bobinas para su posterior uso en impresoras 3D.
+
+Durante el proceso de reciclaje, es posible que se utilicen controles de temperatura y velocidad para garantizar la calidad del filamento producido. 
+
+Este proyecto tiene como ventajas la reducción del desperdicio de botellas de plástico, la reutilización de materiales y la producción de filamento 3D de manera más económica y sostenible. Además, promueve la conciencia ambiental y fomenta la adopción de prácticas de reciclaje en el ámbito de la impresión 3D.
