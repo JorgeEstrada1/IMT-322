@@ -1,95 +1,73 @@
-#define     SUB     27
-#define     BAJ      14
-#define     BAUDRATE    115200
-/*declaracion de variables*/
-volatile uint16_t cont =5;
-volatile unsigned long lasttime=0;
-volatile unsigned long debounceDelay=100;
-volatile bool btnflag=false;
-volatile bool btnflag2=false;
-int i=0;
-/*declaracion de funciones*/
-void sig();
-void ant();
+// Definición de pines para pulsadores
+#define      CONT   2
+#define      RESET  3
+#define      BAUDRATE 9600
+#define      LED     13
+// Variables para el manejo de pulsadores
+
+volatile unsigned long lasttime = 0;
+volatile unsigned long debounceDelay = 2000; // Tiempo de antirrebote
+
+// Contador
+volatile int contador = 0;
+volatile int contador2 = 0;
 
 void setup() {
-  // put your setup code here, to run once:
-  Serial.begin(BAUDRATE);
-  pinMode(SUB,INPUT_PULLUP);
-  pinMode(BAJ,INPUT_PULLUP);
+  // Configurar pines de entrada para pulsadores
+  pinMode(CONT, INPUT_PULLUP);
+  pinMode(RESET, INPUT_PULLUP);
+  pinMode(LED, OUTPUT);
+  // Configurar interrupciones para pulsadores
+  attachInterrupt(digitalPinToInterrupt(CONT), Contador, RISING);
+  attachInterrupt(digitalPinToInterrupt(RESET), reset, RISING);
 
-  attachInterrupt(digitalPinToInterrupt(SUB),sig,FALLING);
-  attachInterrupt(digitalPinToInterrupt(BAJ),ant,FALLING);
-  
-}
+  // Iniciar comunicación serial 
+  Serial.begin(BAUDRATE);
+  }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  if (millis()<30000){
-    Serial.print("Siguiente Cancion: ");
-    Serial.println(i++);
-    if (i>30){
-      i=0;
-    }
-    delay(1000);
+  // Verificar si el pulsador 1 fue presionado
+  if (contador2 == 1){
+      digitalWrite(LED,HIGH);
+      delay(500);
+      digitalWrite(LED,LOW);
+      delay(500);
   }
-
-  if(btnflag){
-    
-    if(digitalRead(SUB)==0){
-      if(millis()-lasttime>=3000){
-        cont=0;
-        Serial.println("Siguiente Cancion");
-        btnflag=false;
-      }
-    }
+  if (contador2 == 2){
+      digitalWrite(LED,HIGH);
+      delay(1000);
+      digitalWrite(LED,LOW);
+      delay(1000);
   }
-  if(btnflag2){
-    
-    if(digitalRead(BAJ)==0){
-      if(millis()-lasttime>=3000){
-        cont=0;
-        Serial.println("Anterior Cancion");
-        btnflag=false;
-      }
-    }
+  if (contador2 == 3){
+      digitalWrite(LED,HIGH);
+      delay(1500);
+      digitalWrite(LED,LOW);
+      delay(1500);
   }
-  
-
 }
 
-/*funciones de interrupcion*/
-void sig(){
-  if(millis()-lasttime>debounceDelay){
-    if(digitalRead(SUB)==0){
-      cont++;
-      btnflag=true;
-      lasttime=millis();
-      if (cont <11 ){
-        Serial.print("Volumen: ");
-        Serial.println(cont);
-        
+// Función de interrupción para el pulsador 1
+void Contador() {
 
-      }
-      
-    }
-    
+  if (millis() - lasttime > debounceDelay) {
+    contador++;
+    lasttime = millis();
+    Serial.println(contador);
   }
-  
-  
 }
-void ant(){
-  if(millis()-lasttime>debounceDelay){
-    if(digitalRead(BAJ)==0){
-      cont--;
-      btnflag2=true;
-      lasttime=millis();
-      if (cont >0 ){
-        Serial.print("Volumen: ");
-        Serial.println(cont);
-      }
 
-      }
-    }  
+// Función de interrupción para el pulsador 2
+void reset() {
+  if (millis() - lasttime > debounceDelay) {
+    contador=0;
+    contador2++;
+    lasttime = millis();
+    Serial.println("Contador reiniciado");
+    Serial.println(contador2);
+  if (contador2 >= 3){
+      contador2 = 0;
 
+  }
+}
 }
