@@ -28,7 +28,7 @@ void loop() {
   if (millis()<30000){
     Serial.print("Siguiente Cancion: ");
     Serial.println(i++);
-    if (i>30){
+    if (i>31){
       i=0;
     }
     delay(1000);
