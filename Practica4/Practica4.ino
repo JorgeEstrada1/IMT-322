@@ -9,6 +9,12 @@ volatile bool boton1=false;
 volatile bool boton2=false;
 void contador();
 void reducir();
+typedef enum{
+  v1=500,
+  v2=1000,
+  v3=1500
+}velocidad;
+velocidad velocidades=v1;
 
 void setup() {
   Serial.begin(BAUDRATE);
@@ -23,9 +29,9 @@ void setup() {
 
 void loop() {
   digitalWrite(LED,1);
-  delay(500);
+  delay(velocidades);
   digitalWrite(LED,0);
-  delay(500);
+  delay(velocidades);
 
   if(boton1){
     
@@ -37,7 +43,27 @@ void loop() {
       }
     }
   }
-  
+  if(boton2){
+    
+    if(digitalRead(REDUCIR)==0){
+      if(millis()-lasttime>=3000){
+        switch (velocidades){
+          case v1:
+          velocidades=v2;
+          break;
+          case v2:
+          velocidades=v3;
+          break;
+          case v3:
+          velocidades=v1;
+          break;
+        }
+        Serial.print("Velocidad: ");
+        Serial.println(velocidades);
+        boton2=false;
+      }
+    }
+  }
 
 }
 
@@ -57,6 +83,7 @@ void reducir(){
   if(millis()-lasttime>debounceDelay){
     if(digitalRead(REDUCIR)==0){
       cont--;
+      boton2=true;
       lasttime=millis();
       Serial.println(cont);
     }  
