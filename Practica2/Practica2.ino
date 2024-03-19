@@ -1,4 +1,4 @@
-// Definición de pines para pulsadores
+
 #define      CONT   2
 #define      RESET  3
 #define      BAUDRATE 9600
