@@ -1,0 +1,91 @@
+import RPi.GPIO as GPIO
+import time
+
+# Definición de pines
+led_rojo = 17
+led_verde = 27
+led_amarillo = 22
+
+btn_abrir = 5
+btn_cerrar = 6
+btn_bloquear = 13
+
+# Contraseña para bloquear/desbloquear
+password = "1234"
+input_password = ""
+
+# Estados de la puerta
+CERRADA, ABIERTA, BLOQUEADA = 0, 1, 2
+estado_actual = CERRADA
+
+# Configuración de GPIO
+GPIO.setmode(GPIO.BCM)
+GPIO.setup(led_rojo, GPIO.OUT)
+GPIO.setup(led_verde, GPIO.OUT)
+GPIO.setup(led_amarillo, GPIO.OUT)
+
+GPIO.setup(btn_abrir, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(btn_cerrar, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+GPIO.setup(btn_bloquear, GPIO.IN, pull_up_down=GPIO.PUD_DOWN)
+
+# Función para actualizar el estado de la puerta
+def actualizar_estado():
+    GPIO.output(led_rojo, estado_actual == CERRADA)
+    GPIO.output(led_verde, estado_actual == ABIERTA)
+    GPIO.output(led_amarillo, estado_actual == BLOQUEADA)
+    estados = ["CERRADA", "ABIERTA", "BLOQUEADA"]
+    print(f"Estado actual de la puerta: {estados[estado_actual]}")
+
+# Inicialización
+actualizar_estado()
+
+# Variables para el antirrebote
+last_debounce_time_abrir = 0
+last_debounce_time_cerrar = 0
+last_debounce_time_bloquear = 0
+debounce_delay = 0.05
+
+try:
+    while True:
+        # Leer estados de los botones
+        reading_abrir = GPIO.input(btn_abrir)
+        reading_cerrar = GPIO.input(btn_cerrar)
+        reading_bloquear = GPIO.input(btn_bloquear)
+        
+        current_time = time.time()
+        
+        # Antirrebote para botón abrir
+        if reading_abrir and (current_time - last_debounce_time_abrir > debounce_delay):
+            last_debounce_time_abrir = current_time
+            if estado_actual == CERRADA:
+                estado_actual = ABIERTA
+                actualizar_estado()
+        
+        # Antirrebote para botón cerrar
+        if reading_cerrar and (current_time - last_debounce_time_cerrar > debounce_delay):
+            last_debounce_time_cerrar = current_time
+            if estado_actual == ABIERTA:
+                estado_actual = CERRADA
+                actualizar_estado()
+        
+        # Antirrebote para botón bloquear/desbloquear
+        if reading_bloquear and (current_time - last_debounce_time_bloquear > debounce_delay):
+            last_debounce_time_bloquear = current_time
+            if estado_actual == ABIERTA:
+                input_password = input("Ingrese la contraseña para bloquear: ")
+                if input_password == password:
+                    estado_actual = BLOQUEADA
+                    actualizar_estado()
+            elif estado_actual == BLOQUEADA:
+                input_password = input("Ingrese la contraseña para desbloquear: ")
+                if input_password == password:
+                    estado_actual = ABIERTA
+                    actualizar_estado()
+        
+        time.sleep(0.01)
+
+except KeyboardInterrupt:
+    print("Programa terminado")
+
+finally:
+    GPIO.cleanup()
